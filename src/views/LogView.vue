@@ -3,7 +3,7 @@
         <div class="surface-card p-4 shadow-2 border-round w-full lg:w-6 align-self-center">
             <div class="text-center mb-5">
                 <img
-                    src="images/blocks/logos/hyper.svg"
+                    src="/src/assets/KillerBee_logo.png"
                     alt="Image"
                     height="50"
                     class="mb-3"
