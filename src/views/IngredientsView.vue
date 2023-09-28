@@ -2,7 +2,6 @@
 import { ref, onMounted, type Ref } from "vue";
 import { FilterMatchMode } from "primevue/api";
 import { useToast } from "primevue/usetoast";
-import ChooseIngredient from "@/components/ChooseIngredient.vue";
 import { IngredientService } from "@/service/IngredientService";
 import type { Ingredient } from "@/models/Ingredient";
 
@@ -28,14 +27,6 @@ const filters = ref({
 });
 const submitted = ref(false);
 
-const formatCurrency = (value: number) => {
-    if (value)
-        return value.toLocaleString("fr-FR", {
-            style: "currency",
-            currency: "EUR",
-        });
-    return;
-};
 const openNew = () => {
     ingredient.value = {
         id: 0,
@@ -58,7 +49,7 @@ const saveIngredient = () => {
             toast.add({
                 severity: "success",
                 summary: "Succès",
-                detail: "Modèle mis à jour",
+                detail: "Ingrédient mis à jour",
                 life: 3000,
             });
         } else {
@@ -66,7 +57,7 @@ const saveIngredient = () => {
             toast.add({
                 severity: "success",
                 summary: "Succès",
-                detail: "Modèle créé",
+                detail: "Ingrédient créé",
                 life: 3000,
             });
         }
@@ -163,13 +154,13 @@ const deleteSelectedIngredients = () => {
                 :filters="filters"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 :rowsPerPageOptions="[5, 10, 25]"
-                currentPageReportTemplate="Affiche du {first} au {last} parmis {totalRecords} modèles"
+                currentPageReportTemplate="Affiche du {first} au {last} parmi {totalRecords} ingrédients"
             >
                 <template #header>
                     <div
                         class="flex flex-wrap gap-2 align-items-center justify-content-between"
                     >
-                        <h4 class="m-0">Manage Modèles</h4>
+                        <h4 class="m-0">Gérer les Ingrédients</h4>
                         <span class="p-input-icon-left">
                             <i class="pi pi-search" />
                             <InputText
@@ -221,7 +212,7 @@ const deleteSelectedIngredients = () => {
         <Dialog
             v-model:visible="ingredientDialog"
             :style="{ width: '450px' }"
-            header="Détail de Modèle"
+            header="Détail d'Ingrédient"
             :modal="true"
             class="p-fluid"
         >
@@ -308,7 +299,7 @@ const deleteSelectedIngredients = () => {
                     style="font-size: 2rem"
                 />
                 <span v-if="ingredient"
-                    >Êtes vous sûr de vouloir supprimer les modèles sélectionnés ?</span
+                    >Êtes vous sûr de vouloir supprimer les ingrédients sélectionnés ?</span
                 >
             </div>
             <template #footer>
