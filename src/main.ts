@@ -103,6 +103,7 @@ import TreeSelect from "primevue/treeselect";
 import TreeTable from "primevue/treetable";
 import TriStateCheckbox from "primevue/tristatecheckbox";
 import VirtualScroller from "primevue/virtualscroller";
+import Editor from 'primevue/editor';
 
 import App from "./App.vue";
 import router from "./router";
@@ -211,5 +212,6 @@ app.component("TreeSelect", TreeSelect);
 app.component("TreeTable", TreeTable);
 app.component("TriStateCheckbox", TriStateCheckbox);
 app.component("VirtualScroller", VirtualScroller);
+app.component("Editor", Editor);
 
 app.mount("#app");
