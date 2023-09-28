@@ -2,101 +2,124 @@
 import { ref, onMounted, type Ref } from "vue";
 import { FilterMatchMode } from "primevue/api";
 import { useToast } from "primevue/usetoast";
+import { FabricationService } from "@/service/FabricationService";
+import type { Fabrication } from "@/models/Fabrication";
+import type { Model } from "@/models/Model";
+import { ModelService } from "@/service/ModelService";
 import { IngredientService } from "@/service/IngredientService";
 import type { Ingredient } from "@/models/Ingredient";
 
 onMounted(() => {
-    IngredientService.getAll().then((data: Ingredient[]) => (ingredients.value = data));
+    FabricationService.getAllFabrications().then(
+        (data: Fabrication[]) => (fabrications.value = data)
+    );
+    ModelService.getModels().then((data: Model[]) => (AllModels.value = data));
+    IngredientService.getAll().then(
+        (data: Ingredient[]) => (AllIngredients.value = data)
+    );
 });
 
 const toast = useToast();
 const dt = ref();
-const ingredients: Ref<Ingredient[]> = ref(Array<Ingredient>());
-const ingredientDialog = ref(false);
-const deleteIngredientDialog = ref(false);
-const deleteIngredientsDialog = ref(false);
+const fabrications: Ref<Fabrication[]> = ref(Array<Fabrication>());
+const fabricationDialog = ref(false);
+const deleteFabricationDialog = ref(false);
+const deleteFabricationsDialog = ref(false);
+const AllModels = ref(Array<Model>());
+const AllIngredients = ref(Array<Ingredient>());
 
-const ingredient: Ref<Ingredient> = ref<Ingredient>({
+const fabrication: Ref<Fabrication> = ref<Fabrication>({
     id: 0,
     nom: "",
     description: "",
+    id_model: 0,
+    etapes_descriptions: "",
 });
-const selectedIngredients: Ref<Ingredient[]> = ref(Array<Ingredient>());
+const selectedFabrications: Ref<Fabrication[]> = ref(Array<Fabrication>());
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 const submitted = ref(false);
 
 const openNew = () => {
-    ingredient.value = {
+    fabrication.value = {
         id: 0,
         nom: "",
         description: "",
+        id_model: 0,
+        etapes_descriptions: "",
     };
     submitted.value = false;
-    ingredientDialog.value = true;
+    fabricationDialog.value = true;
 };
 const hideDialog = () => {
-    ingredientDialog.value = false;
+    fabricationDialog.value = false;
     submitted.value = false;
 };
-const saveIngredient = () => {
+const saveFabrication = () => {
     submitted.value = true;
 
-    if (ingredient.value.nom.trim()) {
-        if (ingredient.value.id) {
-            ingredients.value[findIndexById(ingredient.value.id)] = ingredient.value;
+    if (fabrication.value.nom.trim()) {
+        if (fabrication.value.id) {
+            fabrications.value[findIndexById(fabrication.value.id)] =
+                fabrication.value;
             toast.add({
                 severity: "success",
                 summary: "Succès",
-                detail: "Ingrédient mis à jour",
+                detail: "Fabrication mise à jour",
                 life: 3000,
             });
         } else {
-            ingredients.value.push(ingredient.value);
+            fabrications.value.push(fabrication.value);
             toast.add({
                 severity: "success",
                 summary: "Succès",
-                detail: "Ingrédient créé",
+                detail: "Fabrication créée",
                 life: 3000,
             });
         }
 
-        ingredientDialog.value = false;
-        ingredient.value = {
+        fabricationDialog.value = false;
+        fabrication.value = {
             id: 0,
             nom: "",
             description: "",
+            id_model: 0,
+            etapes_descriptions: "",
         };
     }
 };
-const editIngredient = (mod: Ingredient) => {
-    ingredient.value = { ...mod };
-    ingredientDialog.value = true;
+const editFabrication = (mod: Fabrication) => {
+    fabrication.value = { ...mod };
+    fabricationDialog.value = true;
 };
-const confirmDeleteIngredient = (mod: Ingredient) => {
-    ingredient.value = mod;
-    deleteIngredientDialog.value = true;
+const confirmDeleteFabrication = (mod: Fabrication) => {
+    fabrication.value = mod;
+    deleteFabricationDialog.value = true;
 };
-const deleteIngredient = () => {
-    ingredients.value = ingredients.value.filter((val) => val.id !== ingredient.value.id);
-    deleteIngredientDialog.value = false;
-    ingredient.value = {
+const deleteFabrication = () => {
+    fabrications.value = fabrications.value.filter(
+        (val) => val.id !== fabrication.value.id
+    );
+    deleteFabricationDialog.value = false;
+    fabrication.value = {
         id: 0,
         nom: "",
         description: "",
+        id_model: 0,
+        etapes_descriptions: "",
     };
     toast.add({
         severity: "success",
         summary: "Succès",
-        detail: "Ingrédient Supprimé",
+        detail: "Fabrication Supprimée",
         life: 3000,
     });
 };
 const findIndexById = (id: number) => {
     let index = -1;
-    for (let i = 0; i < ingredients.value.length; i++) {
-        if (ingredients.value[i].id === id) {
+    for (let i = 0; i < fabrications.value.length; i++) {
+        if (fabrications.value[i].id === id) {
             index = i;
             break;
         }
@@ -105,18 +128,18 @@ const findIndexById = (id: number) => {
     return index;
 };
 const confirmDeleteSelected = () => {
-    deleteIngredientsDialog.value = true;
+    deleteFabricationsDialog.value = true;
 };
-const deleteSelectedIngredients = () => {
-    ingredients.value = ingredients.value.filter(
-        (val) => !selectedIngredients.value.includes(val)
+const deleteSelectedFabrications = () => {
+    fabrications.value = fabrications.value.filter(
+        (val) => !selectedFabrications.value.includes(val)
     );
-    deleteIngredientsDialog.value = false;
-    selectedIngredients.value = Array<Ingredient>();
+    deleteFabricationsDialog.value = false;
+    selectedFabrications.value = Array<Fabrication>();
     toast.add({
         severity: "success",
         summary: "Succès",
-        detail: "Ingredients Supprimés",
+        detail: "Fabrications Supprimées",
         life: 3000,
     });
 };
@@ -139,28 +162,31 @@ const deleteSelectedIngredients = () => {
                         icon="pi pi-trash"
                         severity="danger"
                         @click="confirmDeleteSelected"
-                        :disabled="!selectedIngredients || !selectedIngredients.length"
+                        :disabled="
+                            !selectedFabrications ||
+                            !selectedFabrications.length
+                        "
                     />
                 </template>
             </Toolbar>
 
             <DataTable
                 ref="dt"
-                :value="ingredients"
-                v-model:selection="selectedIngredients"
+                :value="fabrications"
+                v-model:selection="selectedFabrications"
                 dataKey="id"
                 :paginator="true"
                 :rows="10"
                 :filters="filters"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 :rowsPerPageOptions="[5, 10, 25]"
-                currentPageReportTemplate="Affiche du {first} au {last} parmi {totalRecords} ingrédients"
+                currentPageReportTemplate="Affiche du {first} au {last} parmi {totalRecords} fabrications"
             >
                 <template #header>
                     <div
                         class="flex flex-wrap gap-2 align-items-center justify-content-between"
                     >
-                        <h4 class="m-0">Gérer les Ingrédients</h4>
+                        <h4 class="m-0">Gérer les Fabrications</h4>
                         <span class="p-input-icon-left">
                             <i class="pi pi-search" />
                             <InputText
@@ -188,6 +214,18 @@ const deleteSelectedIngredients = () => {
                     sortable
                     style="min-width: 10rem"
                 ></Column>
+                <Column header="Modèle" sortable style="min-width: 10rem">
+                    <template #body="slotProps">
+                        <span>
+                            {{
+                                AllModels.find(
+                                    (model) =>
+                                        model.id === slotProps.data.id_model
+                                )?.nom
+                            }}
+                        </span>
+                    </template>
+                </Column>
                 <Column :exportable="false" style="min-width: 8rem">
                     <template #body="slotProps">
                         <Button
@@ -195,14 +233,14 @@ const deleteSelectedIngredients = () => {
                             outlined
                             rounded
                             class="mr-2"
-                            @click="editIngredient(slotProps.data)"
+                            @click="editFabrication(slotProps.data)"
                         />
                         <Button
                             icon="pi pi-trash"
                             outlined
                             rounded
                             severity="danger"
-                            @click="confirmDeleteIngredient(slotProps.data)"
+                            @click="confirmDeleteFabrication(slotProps.data)"
                         />
                     </template>
                 </Column>
@@ -210,9 +248,9 @@ const deleteSelectedIngredients = () => {
         </div>
 
         <Dialog
-            v-model:visible="ingredientDialog"
+            v-model:visible="fabricationDialog"
             :style="{ width: '450px' }"
-            header="Détail d'Ingrédient"
+            header="Détail de Fabrication"
             :modal="true"
             class="p-fluid"
         >
@@ -220,12 +258,12 @@ const deleteSelectedIngredients = () => {
                 <label for="name">Nom</label>
                 <InputText
                     id="name"
-                    v-model.trim="ingredient.nom"
+                    v-model.trim="fabrication.nom"
                     required="true"
                     autofocus
-                    :class="{ 'p-invalid': submitted && !ingredient.nom }"
+                    :class="{ 'p-invalid': submitted && !fabrication.nom }"
                 />
-                <small class="p-error" v-if="submitted && !ingredient.nom"
+                <small class="p-error" v-if="submitted && !fabrication.nom"
                     >Le nom est obligatoire.</small
                 >
             </div>
@@ -233,11 +271,26 @@ const deleteSelectedIngredients = () => {
                 <label for="description">Description</label>
                 <Textarea
                     id="description"
-                    v-model="ingredient.description"
+                    v-model="fabrication.description"
                     required="false"
                     rows="3"
                     cols="20"
                 />
+            </div>
+            <div class="field">
+                <label for="model">Modèle</label>
+                <Dropdown id="model" option-label="nom" option-value="id" v-model="fabrication.id_model" :options="AllModels" />
+            </div>
+            <div class="field">
+                <label for="list_ingredients">Ingrédients</label>
+                <ul>
+                    <li v-for="ingredient in AllModels.find(model => model.id == fabrication.id_model)?.ingredients">
+                    {{ AllIngredients.find(ing => ing.id == ingredient.id)?.nom }} : {{ ingredient.grammage }} g</li>
+                </ul>
+            </div>
+            <div class="field">
+                <label for="etapes_descriptions">Étapes de fabrication</label>
+                <Editor id="etapes_descriptions" v-model="fabrication.etapes_descriptions" editorStyle="height: 320px" />
             </div>
             <template #footer>
                 <Button
@@ -250,13 +303,13 @@ const deleteSelectedIngredients = () => {
                     label="Sauvegarder"
                     icon="pi pi-check"
                     text
-                    @click="saveIngredient"
+                    @click="saveFabrication"
                 />
             </template>
         </Dialog>
 
         <Dialog
-            v-model:visible="deleteIngredientDialog"
+            v-model:visible="deleteFabricationDialog"
             :style="{ width: '450px' }"
             header="Confirm"
             :modal="true"
@@ -266,9 +319,9 @@ const deleteSelectedIngredients = () => {
                     class="pi pi-exclamation-triangle mr-3"
                     style="font-size: 2rem"
                 />
-                <span v-if="ingredient"
-                    >Êtes vous sûr de vouloir supprimer <b>{{ ingredient.nom }}</b
-                    > ?</span
+                <span v-if="fabrication"
+                    >Êtes vous sûr de vouloir supprimer
+                    <b>{{ fabrication.nom }}</b> ?</span
                 >
             </div>
             <template #footer>
@@ -276,19 +329,19 @@ const deleteSelectedIngredients = () => {
                     label="Non"
                     icon="pi pi-times"
                     text
-                    @click="deleteIngredientDialog = false"
+                    @click="deleteFabricationDialog = false"
                 />
                 <Button
                     label="Oui"
                     icon="pi pi-check"
                     text
-                    @click="deleteIngredient"
+                    @click="deleteFabrication"
                 />
             </template>
         </Dialog>
 
         <Dialog
-            v-model:visible="deleteIngredientsDialog"
+            v-model:visible="deleteFabricationsDialog"
             :style="{ width: '450px' }"
             header="Confirmation"
             :modal="true"
@@ -298,8 +351,9 @@ const deleteSelectedIngredients = () => {
                     class="pi pi-exclamation-triangle mr-3"
                     style="font-size: 2rem"
                 />
-                <span v-if="ingredient"
-                    >Êtes vous sûr de vouloir supprimer les ingrédients sélectionnés ?</span
+                <span v-if="fabrication"
+                    >Êtes vous sûr de vouloir supprimer les fabrications
+                    sélectionnées ?</span
                 >
             </div>
             <template #footer>
@@ -307,13 +361,13 @@ const deleteSelectedIngredients = () => {
                     label="Non"
                     icon="pi pi-times"
                     text
-                    @click="deleteIngredientsDialog = false"
+                    @click="deleteFabricationsDialog = false"
                 />
                 <Button
                     label="Oui"
                     icon="pi pi-check"
                     text
-                    @click="deleteSelectedIngredients"
+                    @click="deleteSelectedFabrications"
                 />
             </template>
         </Dialog>

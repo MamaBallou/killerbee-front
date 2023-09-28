@@ -175,13 +175,13 @@ const deleteSelectedModels = () => {
                 :filters="filters"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 :rowsPerPageOptions="[5, 10, 25]"
-                currentPageReportTemplate="Affiche du {first} au {last} parmis {totalRecords} modèles"
+                currentPageReportTemplate="Affiche du {first} au {last} parmi {totalRecords} modèles."
             >
                 <template #header>
                     <div
                         class="flex flex-wrap gap-2 align-items-center justify-content-between"
                     >
-                        <h4 class="m-0">Manage Modèles</h4>
+                        <h4 class="m-0">Gérer les Modèles</h4>
                         <span class="p-input-icon-left">
                             <i class="pi pi-search" />
                             <InputText
