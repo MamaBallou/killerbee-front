@@ -4,6 +4,7 @@ import { FilterMatchMode } from "primevue/api";
 import { useToast } from "primevue/usetoast";
 import { ModelService } from "@/service/ModelService";
 import type { Model } from "@/models/Model";
+import ChooseIngredient from "@/components/ChooseIngredient.vue";
 
 onMounted(() => {
     ModelService.getModels().then((data: Model[]) => (models.value = data));
@@ -22,6 +23,7 @@ const model: Ref<Model> = ref<Model>({
     description: "",
     pUHT: 0,
     gamme: "",
+    ingredients: [],
 });
 const selectedModels: Ref<Model[]> = ref(Array<Model>());
 const filters = ref({
@@ -44,6 +46,7 @@ const openNew = () => {
         description: "",
         pUHT: 0,
         gamme: "",
+        ingredients: [],
     };
     submitted.value = false;
     modelDialog.value = true;
@@ -81,6 +84,7 @@ const saveModel = () => {
             description: "",
             pUHT: 0,
             gamme: "",
+            ingredients: [],
         };
     }
 };
@@ -101,6 +105,7 @@ const deleteModel = () => {
         description: "",
         pUHT: 0,
         gamme: "",
+        ingredients: [],
     };
     toast.add({
         severity: "success",
@@ -284,6 +289,10 @@ const deleteSelectedModels = () => {
             <div class="field">
                 <label for="gamme">Gamme</label>
                 <InputText id="gamme" v-model="model.gamme" required="false" />
+            </div>
+            <div class="field">
+                <label for="ingredients">Ingrédients</label>
+                <ChooseIngredient :ingredients="model.ingredients" />
             </div>
             <template #footer>
                 <Button

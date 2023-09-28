@@ -1,4 +1,4 @@
-import type { Ingredient } from "./Ingredient";
+import type { IngredientInModel } from "./IngredientInModel";
 
 
 export interface Model {
@@ -7,4 +7,5 @@ export interface Model {
     description: string;
     pUHT: number;
     gamme: string;
+    ingredients: IngredientInModel[];
 }
