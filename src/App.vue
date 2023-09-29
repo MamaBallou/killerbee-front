@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView } from "vue-router";
+import NavigationBar from "./components/NavigationBar.vue";
 </script>
 
 <template>
-  <RouterView />
+    <div>
+        <NavigationBar />
+    </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
