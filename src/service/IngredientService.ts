@@ -1,32 +1,39 @@
 import type { Ingredient } from "../models/Ingredient";
+import axios from "axios";
 
 export const IngredientService = {
     getAll() {
-        return Promise.resolve(this.getIngredientsData());
+        return axios.get("http://localhost:3000/", {
+            params: {
+                Table: "Ingrédient",
+            },
+        });
     },
 
-    getIngredientsData(): Ingredient[] {
-        return [
-            {
-                id: 1,
-                nom: "test",
-                description: "test",
+    save(ingredient: Ingredient) {
+        return axios.patch("http://localhost:3000/", {
+            params: {
+                Table: "Ingrédient",
+                Data: ingredient,
             },
-            {
-                id: 2,
-                nom: "test2",
-                description: "test2",
+        });
+    },
+
+    create(ingredient: Ingredient) {
+        return axios.post("http://localhost:3000/", {
+            params: {
+                Table: "Ingrédient",
+                Data: ingredient,
             },
-            {
-                id: 3,
-                nom: "test3",
-                description: "test3",
+        });
+    },
+
+    delete(ingredient: Ingredient) {
+        return axios.delete("http://localhost:3000/", {
+            params: {
+                Table: "Ingrédient",
+                Data: ingredient,
             },
-            {
-                id: 4,
-                nom: "test4",
-                description: "test4",
-            },
-        ];
+        });
     },
 };

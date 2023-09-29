@@ -4,9 +4,12 @@ import { FilterMatchMode } from "primevue/api";
 import { useToast } from "primevue/usetoast";
 import { IngredientService } from "@/service/IngredientService";
 import type { Ingredient } from "@/models/Ingredient";
+import type { AxiosResponse } from "axios";
 
 onMounted(() => {
-    IngredientService.getAll().then((data: Ingredient[]) => (ingredients.value = data));
+    IngredientService.getAll().then(
+        (data: AxiosResponse) => (ingredients.value = data.data)
+    );
 });
 
 const toast = useToast();
@@ -17,9 +20,9 @@ const deleteIngredientDialog = ref(false);
 const deleteIngredientsDialog = ref(false);
 
 const ingredient: Ref<Ingredient> = ref<Ingredient>({
-    id: 0,
-    nom: "",
-    description: "",
+    Id: 0,
+    Nom: "",
+    Description: "",
 });
 const selectedIngredients: Ref<Ingredient[]> = ref(Array<Ingredient>());
 const filters = ref({
@@ -29,9 +32,9 @@ const submitted = ref(false);
 
 const openNew = () => {
     ingredient.value = {
-        id: 0,
-        nom: "",
-        description: "",
+        Id: 0,
+        Nom: "",
+        Description: "",
     };
     submitted.value = false;
     ingredientDialog.value = true;
@@ -43,31 +46,35 @@ const hideDialog = () => {
 const saveIngredient = () => {
     submitted.value = true;
 
-    if (ingredient.value.nom.trim()) {
-        if (ingredient.value.id) {
-            ingredients.value[findIndexById(ingredient.value.id)] = ingredient.value;
-            toast.add({
-                severity: "success",
-                summary: "Succès",
-                detail: "Ingrédient mis à jour",
-                life: 3000,
-            });
+    if (ingredient.value.Nom.trim()) {
+        if (ingredient.value.Id) {
+            IngredientService.save(ingredient.value).then(
+                (data: AxiosResponse) => {
+                    ingredients.value[findIndexById(ingredient.value.Id)] =
+                        ingredient.value;
+                    toast.add({
+                        severity: "success",
+                        summary: "Succès",
+                        detail: "Ingrédient mis à jour",
+                        life: 3000,
+                    });
+                }
+            );
         } else {
-            ingredients.value.push(ingredient.value);
-            toast.add({
-                severity: "success",
-                summary: "Succès",
-                detail: "Ingrédient créé",
-                life: 3000,
-            });
+            IngredientService.create(ingredient.value).then(
+                (data: AxiosResponse) => {
+                    ingredients.value.push(ingredient.value);
+                    toast.add({
+                        severity: "success",
+                        summary: "Succès",
+                        detail: "Ingrédient créé",
+                        life: 3000,
+                    });
+                }
+            );
         }
 
         ingredientDialog.value = false;
-        ingredient.value = {
-            id: 0,
-            nom: "",
-            description: "",
-        };
     }
 };
 const editIngredient = (mod: Ingredient) => {
@@ -79,24 +86,28 @@ const confirmDeleteIngredient = (mod: Ingredient) => {
     deleteIngredientDialog.value = true;
 };
 const deleteIngredient = () => {
-    ingredients.value = ingredients.value.filter((val) => val.id !== ingredient.value.id);
-    deleteIngredientDialog.value = false;
-    ingredient.value = {
-        id: 0,
-        nom: "",
-        description: "",
-    };
-    toast.add({
-        severity: "success",
-        summary: "Succès",
-        detail: "Ingrédient Supprimé",
-        life: 3000,
+    IngredientService.delete(ingredient.value).then((data: AxiosResponse) => {
+        ingredients.value = ingredients.value.filter(
+            (val) => val.Id !== ingredient.value.Id
+        );
+        deleteIngredientDialog.value = false;
+        ingredient.value = {
+            Id: 0,
+            Nom: "",
+            Description: "",
+        };
+        toast.add({
+            severity: "success",
+            summary: "Succès",
+            detail: "Ingrédient Supprimé",
+            life: 3000,
+        });
     });
 };
 const findIndexById = (id: number) => {
     let index = -1;
     for (let i = 0; i < ingredients.value.length; i++) {
-        if (ingredients.value[i].id === id) {
+        if (ingredients.value[i].Id === id) {
             index = i;
             break;
         }
@@ -112,6 +123,18 @@ const deleteSelectedIngredients = () => {
         (val) => !selectedIngredients.value.includes(val)
     );
     deleteIngredientsDialog.value = false;
+    for (let i = 0; i < selectedIngredients.value.length; i++) {
+        IngredientService.delete(selectedIngredients.value[i]).then(
+            (data: AxiosResponse) => {
+                toast.add({
+                    severity: "success",
+                    summary: "Succès",
+                    detail: "Ingrédient Supprimé",
+                    life: 3000,
+                });
+            }
+        );
+    }
     selectedIngredients.value = Array<Ingredient>();
     toast.add({
         severity: "success",
@@ -139,7 +162,9 @@ const deleteSelectedIngredients = () => {
                         icon="pi pi-trash"
                         severity="danger"
                         @click="confirmDeleteSelected"
-                        :disabled="!selectedIngredients || !selectedIngredients.length"
+                        :disabled="
+                            !selectedIngredients || !selectedIngredients.length
+                        "
                     />
                 </template>
             </Toolbar>
@@ -148,7 +173,7 @@ const deleteSelectedIngredients = () => {
                 ref="dt"
                 :value="ingredients"
                 v-model:selection="selectedIngredients"
-                dataKey="id"
+                dataKey="Id"
                 :paginator="true"
                 :rows="10"
                 :filters="filters"
@@ -177,13 +202,13 @@ const deleteSelectedIngredients = () => {
                     :exportable="false"
                 ></Column>
                 <Column
-                    field="nom"
+                    field="Nom"
                     header="Nom"
                     sortable
                     style="min-width: 16rem"
                 ></Column>
                 <Column
-                    field="description"
+                    field="Description"
                     header="Description"
                     sortable
                     style="min-width: 10rem"
@@ -220,12 +245,12 @@ const deleteSelectedIngredients = () => {
                 <label for="name">Nom</label>
                 <InputText
                     id="name"
-                    v-model.trim="ingredient.nom"
+                    v-model.trim="ingredient.Nom"
                     required="true"
                     autofocus
-                    :class="{ 'p-invalid': submitted && !ingredient.nom }"
+                    :class="{ 'p-invalid': submitted && !ingredient.Nom }"
                 />
-                <small class="p-error" v-if="submitted && !ingredient.nom"
+                <small class="p-error" v-if="submitted && !ingredient.Nom"
                     >Le nom est obligatoire.</small
                 >
             </div>
@@ -233,7 +258,7 @@ const deleteSelectedIngredients = () => {
                 <label for="description">Description</label>
                 <Textarea
                     id="description"
-                    v-model="ingredient.description"
+                    v-model="ingredient.Description"
                     required="false"
                     rows="3"
                     cols="20"
@@ -267,8 +292,8 @@ const deleteSelectedIngredients = () => {
                     style="font-size: 2rem"
                 />
                 <span v-if="ingredient"
-                    >Êtes vous sûr de vouloir supprimer <b>{{ ingredient.nom }}</b
-                    > ?</span
+                    >Êtes vous sûr de vouloir supprimer
+                    <b>{{ ingredient.Nom }}</b> ?</span
                 >
             </div>
             <template #footer>
@@ -299,7 +324,8 @@ const deleteSelectedIngredients = () => {
                     style="font-size: 2rem"
                 />
                 <span v-if="ingredient"
-                    >Êtes vous sûr de vouloir supprimer les ingrédients sélectionnés ?</span
+                    >Êtes vous sûr de vouloir supprimer les ingrédients
+                    sélectionnés ?</span
                 >
             </div>
             <template #footer>
