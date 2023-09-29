@@ -2,10 +2,10 @@ import type { IngredientInModel } from "./IngredientInModel";
 
 
 export interface Model {
-    id: number;
-    nom: string;
-    description: string;
+    Id: number;
+    Nom: string;
+    Description: string;
     pUHT: number;
-    gamme: string;
-    ingredients: IngredientInModel[];
+    Gamme: string;
+    Ingredient: IngredientInModel[];
 }

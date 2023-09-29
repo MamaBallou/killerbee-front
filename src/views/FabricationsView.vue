@@ -13,7 +13,7 @@ onMounted(() => {
     FabricationService.getAllFabrications().then(
         (data: Fabrication[]) => (fabrications.value = data)
     );
-    ModelService.getModels().then((data: Model[]) => (AllModels.value = data));
+    ModelService.getAll().then((data: Model[]) => (AllModels.value = data));
     IngredientService.getAll().then(
         (data: Ingredient[]) => (AllIngredients.value = data)
     );

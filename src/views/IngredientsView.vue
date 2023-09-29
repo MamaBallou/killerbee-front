@@ -119,28 +119,33 @@ const confirmDeleteSelected = () => {
     deleteIngredientsDialog.value = true;
 };
 const deleteSelectedIngredients = () => {
-    ingredients.value = ingredients.value.filter(
-        (val) => !selectedIngredients.value.includes(val)
-    );
     deleteIngredientsDialog.value = false;
+    var promises: Promise<void> = Promise.resolve();
     for (let i = 0; i < selectedIngredients.value.length; i++) {
-        IngredientService.delete(selectedIngredients.value[i]).then(
-            (data: AxiosResponse) => {
-                toast.add({
-                    severity: "success",
-                    summary: "Succès",
-                    detail: "Ingrédient Supprimé",
-                    life: 3000,
-                });
-            }
-        );
+        promises.then(() => {
+            IngredientService.delete(selectedIngredients.value[i]).then(
+                (data: AxiosResponse) => {
+                    toast.add({
+                        severity: "success",
+                        summary: "Succès",
+                        detail: "Ingrédient Supprimé",
+                        life: 3000,
+                    });
+                }
+            );
+        });
     }
-    selectedIngredients.value = Array<Ingredient>();
-    toast.add({
-        severity: "success",
-        summary: "Succès",
-        detail: "Ingredients Supprimés",
-        life: 3000,
+    promises.finally(() => {
+        ingredients.value = ingredients.value.filter(
+            (val) => !selectedIngredients.value.includes(val)
+        );
+        selectedIngredients.value = Array<Ingredient>();
+        toast.add({
+            severity: "success",
+            summary: "Succès",
+            detail: "Ingredients Supprimés",
+            life: 3000,
+        });
     });
 };
 </script>

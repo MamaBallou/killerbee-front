@@ -1,4 +1,4 @@
 export interface IngredientInModel {
-    id: number;
-    grammage: number;
+    Id_Ingredient: number;
+    Grammage: number;
 }

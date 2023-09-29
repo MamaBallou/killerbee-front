@@ -5,6 +5,7 @@ import { IngredientService } from "@/service/IngredientService";
 import type DataTable from "primevue/datatable";
 import { ref, onMounted, type Ref } from "vue";
 import { useToast } from "primevue/usetoast";
+import type { AxiosResponse } from "axios";
 
 const props = defineProps<{
     ingredients: IngredientInModel[];
@@ -12,24 +13,24 @@ const props = defineProps<{
 
 const listAllIngredients = ref<Ingredient[]>([]);
 const ingredient = ref<IngredientInModel>({
-    id: 0,
-    grammage: 0,
+    Id_Ingredient: 0,
+    Grammage: 0,
 });
 const deleteIngredientDialog = ref(false);
 const editingRows = ref([]);
 const toast = useToast();
 
 onMounted(() => {
-    IngredientService.getAll().then((res: Ingredient[]) => {
-        listAllIngredients.value = res;
+    IngredientService.getAll().then((res: AxiosResponse) => {
+        listAllIngredients.value = res.data;
     });
 });
 
 const addRow = () => {
     const dt = ref<DataTable | null>(null);
-    const newIngredient = {
-        id: 0,
-        grammage: 0,
+    const newIngredient: IngredientInModel = {
+        Id_Ingredient: 0,
+        Grammage: 0,
     };
     props.ingredients.push(newIngredient);
 };
@@ -42,8 +43,8 @@ const deleteIngredient = () => {
     props.ingredients.splice(props.ingredients.indexOf(ingredient.value), 1);
     deleteIngredientDialog.value = false;
     ingredient.value = {
-        id: -1,
-        grammage: 0,
+        Id_Ingredient: -1,
+        Grammage: 0,
     };
     toast.add({
         severity: "success",
@@ -61,7 +62,7 @@ const onRowEditSave = (event: any) => { // TODO: Trouver le type
 </script>
 
 <template>
-    <DataTable v-model:editingRows="editingRows" editMode="row" @row-edit-save="onRowEditSave" tableClass="editable-cells-table" ref="dt" :value="ingredients" data-key="id" :rows="300">
+    <DataTable v-model:editingRows="editingRows" editMode="row" @row-edit-save="onRowEditSave" tableClass="editable-cells-table" ref="dt" :value="ingredients" data-key="Id_Ingredient" :rows="300">
         <template #header>
             <div
                 class="flex flex-wrap gap-2 align-items-center justify-content-between"
@@ -79,21 +80,21 @@ const onRowEditSave = (event: any) => { // TODO: Trouver le type
             <template #body="dat">
                 <span>{{
                     listAllIngredients.find(
-                        (element) => (element.id == dat.data.id)
-                    )?.nom
+                        (element) => (element.Id == dat.data.Id_Ingredient)
+                    )?.Nom
                 }}</span>
             </template>
             <template #editor="{ data, field }">
                 <Dropdown
-                    v-model="data.id"
+                    v-model="data.Id_Ingredient"
                     :options="listAllIngredients"
-                    option-value="id"
-                    optionLabel="nom"
+                    option-value="Id"
+                    optionLabel="Nom"
                     placeholder="Sélectionner un ingrédient"
                 />
             </template>
         </Column>
-        <Column field="grammage" header="Grammage">
+        <Column field="Grammage" header="Grammage">
             <template #editor="{ data, field }">
                 <InputNumber
                     v-model="data[field]"
@@ -132,8 +133,8 @@ const onRowEditSave = (event: any) => { // TODO: Trouver le type
                 >Êtes vous sûr de vouloir supprimer
                 <b>{{
                     listAllIngredients.find(
-                        (element) => (element.id = ingredient.id)
-                    )?.nom
+                        (element) => (element.Id = ingredient.Id_Ingredient)
+                    )?.Nom
                 }}</b>
                 ?</span
             >
