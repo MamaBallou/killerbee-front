@@ -8,14 +8,17 @@ import type { Model } from "@/models/Model";
 import { ModelService } from "@/service/ModelService";
 import { IngredientService } from "@/service/IngredientService";
 import type { Ingredient } from "@/models/Ingredient";
+import type { AxiosResponse } from "axios";
 
 onMounted(() => {
-    FabricationService.getAllFabrications().then(
-        (data: Fabrication[]) => (fabrications.value = data)
+    FabricationService.getAll().then(
+        (data: AxiosResponse) => (fabrications.value = data.data)
     );
-    ModelService.getModels().then((data: Model[]) => (AllModels.value = data));
+    ModelService.getAll().then(
+        (data: AxiosResponse) => (AllModels.value = data.data)
+    );
     IngredientService.getAll().then(
-        (data: Ingredient[]) => (AllIngredients.value = data)
+        (data: AxiosResponse) => (AllIngredients.value = data.data)
     );
 });
 
@@ -29,11 +32,11 @@ const AllModels = ref(Array<Model>());
 const AllIngredients = ref(Array<Ingredient>());
 
 const fabrication: Ref<Fabrication> = ref<Fabrication>({
-    id: 0,
-    nom: "",
-    description: "",
-    id_model: 0,
-    etapes_descriptions: "",
+    Id: 0,
+    Nom: "",
+    Description: "",
+    Id_Modèle: 0,
+    Etapes_Description: "",
 });
 const selectedFabrications: Ref<Fabrication[]> = ref(Array<Fabrication>());
 const filters = ref({
@@ -43,11 +46,11 @@ const submitted = ref(false);
 
 const openNew = () => {
     fabrication.value = {
-        id: 0,
-        nom: "",
-        description: "",
-        id_model: 0,
-        etapes_descriptions: "",
+        Id: 0,
+        Nom: "",
+        Description: "",
+        Id_Modèle: 0,
+        Etapes_Description: "",
     };
     submitted.value = false;
     fabricationDialog.value = true;
@@ -59,9 +62,9 @@ const hideDialog = () => {
 const saveFabrication = () => {
     submitted.value = true;
 
-    if (fabrication.value.nom.trim()) {
-        if (fabrication.value.id) {
-            fabrications.value[findIndexById(fabrication.value.id)] =
+    if (fabrication.value.Nom.trim()) {
+        if (fabrication.value.Id) {
+            fabrications.value[findIndexById(fabrication.value.Id)] =
                 fabrication.value;
             toast.add({
                 severity: "success",
@@ -81,11 +84,11 @@ const saveFabrication = () => {
 
         fabricationDialog.value = false;
         fabrication.value = {
-            id: 0,
-            nom: "",
-            description: "",
-            id_model: 0,
-            etapes_descriptions: "",
+            Id: 0,
+            Nom: "",
+            Description: "",
+            Id_Modèle: 0,
+            Etapes_Description: "",
         };
     }
 };
@@ -99,15 +102,15 @@ const confirmDeleteFabrication = (mod: Fabrication) => {
 };
 const deleteFabrication = () => {
     fabrications.value = fabrications.value.filter(
-        (val) => val.id !== fabrication.value.id
+        (val) => val.Id !== fabrication.value.Id
     );
     deleteFabricationDialog.value = false;
     fabrication.value = {
-        id: 0,
-        nom: "",
-        description: "",
-        id_model: 0,
-        etapes_descriptions: "",
+        Id: 0,
+        Nom: "",
+        Description: "",
+        Id_Modèle: 0,
+        Etapes_Description: "",
     };
     toast.add({
         severity: "success",
@@ -119,7 +122,7 @@ const deleteFabrication = () => {
 const findIndexById = (id: number) => {
     let index = -1;
     for (let i = 0; i < fabrications.value.length; i++) {
-        if (fabrications.value[i].id === id) {
+        if (fabrications.value[i].Id === id) {
             index = i;
             break;
         }
@@ -174,7 +177,7 @@ const deleteSelectedFabrications = () => {
                 ref="dt"
                 :value="fabrications"
                 v-model:selection="selectedFabrications"
-                dataKey="id"
+                dataKey="Id"
                 :paginator="true"
                 :rows="10"
                 :filters="filters"
@@ -203,13 +206,13 @@ const deleteSelectedFabrications = () => {
                     :exportable="false"
                 ></Column>
                 <Column
-                    field="nom"
+                    field="Nom"
                     header="Nom"
                     sortable
                     style="min-width: 16rem"
                 ></Column>
                 <Column
-                    field="description"
+                    field="Description"
                     header="Description"
                     sortable
                     style="min-width: 10rem"
@@ -220,8 +223,8 @@ const deleteSelectedFabrications = () => {
                             {{
                                 AllModels.find(
                                     (model) =>
-                                        model.id === slotProps.data.id_model
-                                )?.nom
+                                        model.Id === slotProps.data.Id_Modèle
+                                )?.Nom
                             }}
                         </span>
                     </template>
@@ -258,12 +261,12 @@ const deleteSelectedFabrications = () => {
                 <label for="name">Nom</label>
                 <InputText
                     id="name"
-                    v-model.trim="fabrication.nom"
+                    v-model.trim="fabrication.Nom"
                     required="true"
                     autofocus
-                    :class="{ 'p-invalid': submitted && !fabrication.nom }"
+                    :class="{ 'p-invalid': submitted && !fabrication.Nom }"
                 />
-                <small class="p-error" v-if="submitted && !fabrication.nom"
+                <small class="p-error" v-if="submitted && !fabrication.Nom"
                     >Le nom est obligatoire.</small
                 >
             </div>
@@ -271,7 +274,7 @@ const deleteSelectedFabrications = () => {
                 <label for="description">Description</label>
                 <Textarea
                     id="description"
-                    v-model="fabrication.description"
+                    v-model="fabrication.Description"
                     required="false"
                     rows="3"
                     cols="20"
@@ -279,18 +282,38 @@ const deleteSelectedFabrications = () => {
             </div>
             <div class="field">
                 <label for="model">Modèle</label>
-                <Dropdown id="model" option-label="nom" option-value="id" v-model="fabrication.id_model" :options="AllModels" />
+                <Dropdown
+                    id="model"
+                    option-label="Nom"
+                    option-value="Id"
+                    v-model="fabrication.Id_Modèle"
+                    :options="AllModels"
+                />
             </div>
             <div class="field">
                 <label for="list_ingredients">Ingrédients</label>
                 <ul>
-                    <li v-for="ingredient in AllModels.find(model => model.id == fabrication.id_model)?.ingredients">
-                    {{ AllIngredients.find(ing => ing.id == ingredient.id)?.nom }} : {{ ingredient.grammage }} g</li>
+                    <li
+                        v-for="ingredient in AllModels.find(
+                            (model) => model.Id == fabrication.Id_Modèle
+                        )?.Ingredient"
+                    >
+                        {{
+                            AllIngredients.find(
+                                (ing) => ing.Id == ingredient.Id_Ingredient
+                            )?.Nom
+                        }}
+                        : {{ ingredient.Grammage }} g
+                    </li>
                 </ul>
             </div>
             <div class="field">
                 <label for="etapes_descriptions">Étapes de fabrication</label>
-                <Editor id="etapes_descriptions" v-model="fabrication.etapes_descriptions" editorStyle="height: 320px" />
+                <Editor
+                    id="etapes_descriptions"
+                    v-model="fabrication.Etapes_Description"
+                    editorStyle="height: 320px"
+                />
             </div>
             <template #footer>
                 <Button
@@ -321,7 +344,7 @@ const deleteSelectedFabrications = () => {
                 />
                 <span v-if="fabrication"
                     >Êtes vous sûr de vouloir supprimer
-                    <b>{{ fabrication.nom }}</b> ?</span
+                    <b>{{ fabrication.Nom }}</b> ?</span
                 >
             </div>
             <template #footer>

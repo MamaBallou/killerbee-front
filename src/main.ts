@@ -216,6 +216,6 @@ app.component("Editor", Editor);
 
 // Axios
 import axios from "axios";
-axios.defaults.baseURL = import.meta.env.API_LINK;
+axios.defaults.baseURL = import.meta.env.VITE_API_LINK;
 
 app.mount("#app");

@@ -5,9 +5,12 @@ import { useToast } from "primevue/usetoast";
 import { ModelService } from "@/service/ModelService";
 import type { Model } from "@/models/Model";
 import ChooseIngredient from "@/components/ChooseIngredient.vue";
+import type { AxiosResponse } from "axios";
 
 onMounted(() => {
-    ModelService.getModels().then((data: Model[]) => (models.value = data));
+    ModelService.getAll().then(
+        (data: AxiosResponse) => (models.value = data.data)
+    );
 });
 
 const toast = useToast();
@@ -18,12 +21,12 @@ const deleteModelDialog = ref(false);
 const deleteModelsDialog = ref(false);
 
 const model: Ref<Model> = ref<Model>({
-    id: 0,
-    nom: "",
-    description: "",
+    Id: 0,
+    Nom: "",
+    Description: "",
     pUHT: 0,
-    gamme: "",
-    ingredients: [],
+    Gamme: "",
+    Ingredient: [],
 });
 const selectedModels: Ref<Model[]> = ref(Array<Model>());
 const filters = ref({
@@ -41,12 +44,12 @@ const formatCurrency = (value: number) => {
 };
 const openNew = () => {
     model.value = {
-        id: 0,
-        nom: "",
-        description: "",
+        Id: 0,
+        Nom: "",
+        Description: "",
         pUHT: 0,
-        gamme: "",
-        ingredients: [],
+        Gamme: "",
+        Ingredient: [],
     };
     submitted.value = false;
     modelDialog.value = true;
@@ -58,34 +61,30 @@ const hideDialog = () => {
 const saveModel = () => {
     submitted.value = true;
 
-    if (model.value.nom.trim()) {
-        if (model.value.id) {
-            models.value[findIndexById(model.value.id)] = model.value;
-            toast.add({
-                severity: "success",
-                summary: "Succès",
-                detail: "Modèle mis à jour",
-                life: 3000,
+    if (model.value.Nom.trim()) {
+        if (model.value.Id) {
+            ModelService.save(model.value).then((data: AxiosResponse) => {
+                models.value[findIndexById(model.value.Id)] = model.value;
+                toast.add({
+                    severity: "success",
+                    summary: "Succès",
+                    detail: "Modèle mis à jour",
+                    life: 3000,
+                });
             });
         } else {
-            models.value.push(model.value);
-            toast.add({
-                severity: "success",
-                summary: "Succès",
-                detail: "Modèle créé",
-                life: 3000,
+            ModelService.create(model.value).then((data: AxiosResponse) => {
+                models.value.push(model.value);
+                toast.add({
+                    severity: "success",
+                    summary: "Succès",
+                    detail: "Modèle créé",
+                    life: 3000,
+                });
             });
         }
 
         modelDialog.value = false;
-        model.value = {
-            id: 0,
-            nom: "",
-            description: "",
-            pUHT: 0,
-            gamme: "",
-            ingredients: [],
-        };
     }
 };
 const editModel = (mod: Model) => {
@@ -97,27 +96,29 @@ const confirmDeleteModel = (mod: Model) => {
     deleteModelDialog.value = true;
 };
 const deleteModel = () => {
-    models.value = models.value.filter((val) => val.id !== model.value.id);
-    deleteModelDialog.value = false;
-    model.value = {
-        id: 0,
-        nom: "",
-        description: "",
-        pUHT: 0,
-        gamme: "",
-        ingredients: [],
-    };
-    toast.add({
-        severity: "success",
-        summary: "Succès",
-        detail: "Modèle Supprimé",
-        life: 3000,
+    ModelService.delete(model.value).then((data: AxiosResponse) => {
+        models.value = models.value.filter((val) => val.Id !== model.value.Id);
+        deleteModelDialog.value = false;
+        model.value = {
+            Id: 0,
+            Nom: "",
+            Description: "",
+            pUHT: 0,
+            Gamme: "",
+            Ingredient: [],
+        };
+        toast.add({
+            severity: "success",
+            summary: "Succès",
+            detail: "Modèle Supprimé",
+            life: 3000,
+        });
     });
 };
 const findIndexById = (id: number) => {
     let index = -1;
     for (let i = 0; i < models.value.length; i++) {
-        if (models.value[i].id === id) {
+        if (models.value[i].Id === id) {
             index = i;
             break;
         }
@@ -129,16 +130,24 @@ const confirmDeleteSelected = () => {
     deleteModelsDialog.value = true;
 };
 const deleteSelectedModels = () => {
-    models.value = models.value.filter(
-        (val) => !selectedModels.value.includes(val)
-    );
     deleteModelsDialog.value = false;
-    selectedModels.value = Array<Model>();
-    toast.add({
-        severity: "success",
-        summary: "Succès",
-        detail: "Modèles Supprimés",
-        life: 3000,
+    var promises: Promise<void> = Promise.resolve();
+    for (let i = 0; i < selectedModels.value.length; i++) {
+        promises.then(() => {
+            ModelService.delete(selectedModels.value[i]);
+        });
+    }
+    promises.finally(() => {
+        models.value = models.value.filter(
+            (val) => !selectedModels.value.includes(val)
+        );
+        selectedModels.value = Array<Model>();
+        toast.add({
+            severity: "success",
+            summary: "Succès",
+            detail: "Modèles Supprimés",
+            life: 3000,
+        });
     });
 };
 </script>
@@ -198,7 +207,7 @@ const deleteSelectedModels = () => {
                     :exportable="false"
                 ></Column>
                 <Column
-                    field="nom"
+                    field="Nom"
                     header="Nom"
                     sortable
                     style="min-width: 16rem"
@@ -214,13 +223,13 @@ const deleteSelectedModels = () => {
                     </template>
                 </Column>
                 <Column
-                    field="description"
+                    field="Description"
                     header="Description"
                     sortable
                     style="min-width: 10rem"
                 ></Column>
                 <Column
-                    field="gamme"
+                    field="Gamme"
                     header="Gamme"
                     sortable
                     style="min-width: 10rem"
@@ -257,12 +266,12 @@ const deleteSelectedModels = () => {
                 <label for="name">Nom</label>
                 <InputText
                     id="name"
-                    v-model.trim="model.nom"
+                    v-model.trim="model.Nom"
                     required="true"
                     autofocus
-                    :class="{ 'p-invalid': submitted && !model.nom }"
+                    :class="{ 'p-invalid': submitted && !model.Nom }"
                 />
-                <small class="p-error" v-if="submitted && !model.nom"
+                <small class="p-error" v-if="submitted && !model.Nom"
                     >Le nom est obligatoire.</small
                 >
             </div>
@@ -270,7 +279,7 @@ const deleteSelectedModels = () => {
                 <label for="description">Description</label>
                 <Textarea
                     id="description"
-                    v-model="model.description"
+                    v-model="model.Description"
                     required="false"
                     rows="3"
                     cols="20"
@@ -288,11 +297,11 @@ const deleteSelectedModels = () => {
             </div>
             <div class="field">
                 <label for="gamme">Gamme</label>
-                <InputText id="gamme" v-model="model.gamme" required="false" />
+                <InputText id="gamme" v-model="model.Gamme" required="false" />
             </div>
             <div class="field">
                 <label for="ingredients">Ingrédients</label>
-                <ChooseIngredient :ingredients="model.ingredients" />
+                <ChooseIngredient :ingredients="model.Ingredient" />
             </div>
             <template #footer>
                 <Button
@@ -322,8 +331,8 @@ const deleteSelectedModels = () => {
                     style="font-size: 2rem"
                 />
                 <span v-if="model"
-                    >Êtes vous sûr de vouloir supprimer <b>{{ model.nom }}</b
-                    > ?</span
+                    >Êtes vous sûr de vouloir supprimer
+                    <b>{{ model.Nom }}</b> ?</span
                 >
             </div>
             <template #footer>
@@ -354,7 +363,8 @@ const deleteSelectedModels = () => {
                     style="font-size: 2rem"
                 />
                 <span v-if="model"
-                    >Êtes vous sûr de vouloir supprimer les modèles sélectionnés ?</span
+                    >Êtes vous sûr de vouloir supprimer les modèles sélectionnés
+                    ?</span
                 >
             </div>
             <template #footer>

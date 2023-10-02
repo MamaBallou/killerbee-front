@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const IngredientService = {
     getAll() {
-        return axios.get("http://localhost:3000/", {
+        return axios.get("/", {
             params: {
                 Table: "Ingrédient",
             },
@@ -11,7 +11,7 @@ export const IngredientService = {
     },
 
     save(ingredient: Ingredient) {
-        return axios.patch("http://localhost:3000/", {
+        return axios.patch("/", {
             params: {
                 Table: "Ingrédient",
                 Data: ingredient,
@@ -20,7 +20,7 @@ export const IngredientService = {
     },
 
     create(ingredient: Ingredient) {
-        return axios.post("http://localhost:3000/", {
+        return axios.post("/", {
             params: {
                 Table: "Ingrédient",
                 Data: ingredient,
@@ -29,7 +29,7 @@ export const IngredientService = {
     },
 
     delete(ingredient: Ingredient) {
-        return axios.delete("http://localhost:3000/", {
+        return axios.delete("/", {
             params: {
                 Table: "Ingrédient",
                 Data: ingredient,
