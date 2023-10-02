@@ -8,11 +8,6 @@ const route = useRoute();
 const active = ref(0);
 const items = ref([
     {
-        label: 'Home',
-        icon: 'pi pi-fw pi-home',
-        route: '/'
-    },
-    {
         label: 'Fabrications',
         icon: 'pi pi-spin pi-cog',
         route: '/fabrications'
