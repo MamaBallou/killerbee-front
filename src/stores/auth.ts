@@ -1,3 +1,4 @@
+import router from "@/router";
 import { AuthService } from "@/service/AuthService";
 import { ModelService } from "@/service/ModelService";
 import { Axios, type AxiosResponse } from "axios";
@@ -20,10 +21,13 @@ export const useAuthStore = defineStore({
                 .then((response: AxiosResponse) => {
                     if (response.status != 200) {
                         localStorage.removeItem("token");
+                        router.push({ name: "login" });
                     }
                 })
                 .catch((error) => {
+                    
                     localStorage.removeItem("token");
+                    router.push({ name: "login" });
                 });
         },
         getToken: (state: State) => {

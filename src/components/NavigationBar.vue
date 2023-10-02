@@ -33,14 +33,14 @@ onMounted(() => {
     active.value = items.value.findIndex(
         (item) => route.path === router.resolve(item.route).path
     );
-    authStore.isAuthenticated.then((response: boolean) => {
+    authStore.isAuthenticated.then((response) => {
         
         isAuthenticated.value = response;
     });
 });
 
 onUpdated(() => {    
-    authStore.isAuthenticated.then((response: boolean) => {
+    authStore.isAuthenticated.then((response) => {
         isAuthenticated.value = response;
     });
 });
@@ -92,5 +92,5 @@ const logout = () => {
             </template>
         </TabMenu>
     </div>
-    <router-view />
+    <RouterView />
 </template>
