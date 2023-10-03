@@ -137,7 +137,7 @@ const deleteSelectedModels = () => {
             ModelService.delete(selectedModels.value[i]);
         });
     }
-    promises.finally(() => {
+    promises = promises.finally(() => {
         models.value = models.value.filter(
             (val) => !selectedModels.value.includes(val)
         );
