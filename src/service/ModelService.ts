@@ -1,12 +1,18 @@
 import type { Model } from "@/models/Model";
 import axios from "axios";
+import { useAuthStore } from "@/stores/auth";
+
+const authStore = useAuthStore();
 
 export const ModelService = {
     getAll() {
         return axios.get("/", {
             params: {
                 Table: "Modèle",
-            }
+            },
+            headers: {
+                Authorization: authStore.getToken,
+            },
         });
     },
 
@@ -15,7 +21,10 @@ export const ModelService = {
             params: {
                 Table: "Modèle",
                 Data: model,
-            }
+            },
+            headers: {
+                Authorization: authStore.getToken,
+            },
         });
     },
 
@@ -24,7 +33,10 @@ export const ModelService = {
             params: {
                 Table: "Modèle",
                 Data: model,
-            }
+            },
+            headers: {
+                Authorization: authStore.getToken,
+            },
         });
     },
 
@@ -33,7 +45,10 @@ export const ModelService = {
             params: {
                 Table: "Modèle",
                 Data: model,
-            }
+            },
+            headers: {
+                Authorization: authStore.getToken,
+            },
         });
     },
 };

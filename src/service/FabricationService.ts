@@ -1,12 +1,18 @@
 import type { Fabrication } from "@/models/Fabrication";
 import axios from "axios";
 import type { AxiosResponse } from "axios";
+import { useAuthStore } from "@/stores/auth";
+
+const authStore = useAuthStore();
 
 export const FabricationService = {
     getAll(): Promise<AxiosResponse> {
         return axios.get("/", {
             params: {
                 Table: "Fabrication",
+            },
+            headers: {
+                Authorization: authStore.getToken,
             },
         });
     },
@@ -16,6 +22,9 @@ export const FabricationService = {
                 Table: "Fabrication",
                 Data: fabrication,
             },
+            headers: {
+                Authorization: authStore.getToken,
+            },
         });
     },
     create(fabrication: Fabrication): Promise<AxiosResponse> {
@@ -24,6 +33,9 @@ export const FabricationService = {
                 Table: "Fabrication",
                 Data: fabrication,
             },
+            headers: {
+                Authorization: authStore.getToken,
+            },
         });
     },
     delete(fabrication: Fabrication): Promise<AxiosResponse> {
@@ -31,6 +43,9 @@ export const FabricationService = {
             params: {
                 Table: "Fabrication",
                 Data: fabrication,
+            },
+            headers: {
+                Authorization: authStore.getToken,
             },
         });
     },

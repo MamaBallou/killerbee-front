@@ -1,11 +1,17 @@
 import type { Ingredient } from "../models/Ingredient";
 import axios from "axios";
+import { useAuthStore } from "@/stores/auth";
+
+const authStore = useAuthStore();
 
 export const IngredientService = {
     getAll() {
         return axios.get("/", {
             params: {
                 Table: "Ingrédient",
+            },
+            headers: {
+                Authorization: authStore.getToken,
             },
         });
     },
@@ -16,6 +22,9 @@ export const IngredientService = {
                 Table: "Ingrédient",
                 Data: ingredient,
             },
+            headers: {
+                Authorization: authStore.getToken,
+            },
         });
     },
 
@@ -25,6 +34,9 @@ export const IngredientService = {
                 Table: "Ingrédient",
                 Data: ingredient,
             },
+            headers: {
+                Authorization: authStore.getToken,
+            },
         });
     },
 
@@ -33,6 +45,9 @@ export const IngredientService = {
             params: {
                 Table: "Ingrédient",
                 Data: ingredient,
+            },
+            headers: {
+                Authorization: authStore.getToken,
             },
         });
     },
