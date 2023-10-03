@@ -1,14 +1,9 @@
+import { AuthService } from "@/service/AuthService";
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
-        {
-            path: "/",
-            name: "home",
-            component: HomeView,
-        },
         {
             path: "/login",
             name: "login",
@@ -33,6 +28,19 @@ const router = createRouter({
             component: () => import("../views/FabricationsView.vue"),
         },
     ],
+});
+
+router.beforeEach(async (to, from, next) => {
+    if (to.name !== "login") {
+        if (
+            !localStorage.getItem("token") ||
+            (await AuthService.verifyToken(localStorage.getItem("token") ?? ""))
+                .status !== 200
+        ) {
+            next({ name: "login" });
+        }
+    }
+    next();
 });
 
 export default router;
