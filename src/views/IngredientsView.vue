@@ -122,7 +122,7 @@ const deleteSelectedIngredients = () => {
     deleteIngredientsDialog.value = false;
     var promises: Promise<void> = Promise.resolve();
     for (let i = 0; i < selectedIngredients.value.length; i++) {
-        promises.then(() => {
+        promises = promises.then(() => {
             IngredientService.delete(selectedIngredients.value[i]).then(
                 (data: AxiosResponse) => {
                     toast.add({

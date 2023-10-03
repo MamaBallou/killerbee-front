@@ -64,22 +64,30 @@ const saveFabrication = () => {
 
     if (fabrication.value.Nom.trim()) {
         if (fabrication.value.Id) {
-            fabrications.value[findIndexById(fabrication.value.Id)] =
-                fabrication.value;
-            toast.add({
-                severity: "success",
-                summary: "Succès",
-                detail: "Fabrication mise à jour",
-                life: 3000,
-            });
+            FabricationService.save(fabrication.value).then(
+                (res: AxiosResponse) => {
+                    fabrications.value[findIndexById(fabrication.value.Id)] =
+                        fabrication.value;
+                    toast.add({
+                        severity: "success",
+                        summary: "Succès",
+                        detail: "Fabrication mise à jour",
+                        life: 3000,
+                    });
+                }
+            );
         } else {
-            fabrications.value.push(fabrication.value);
-            toast.add({
-                severity: "success",
-                summary: "Succès",
-                detail: "Fabrication créée",
-                life: 3000,
-            });
+            FabricationService.save(fabrication.value).then(
+                (res: AxiosResponse) => {
+                    fabrications.value.push(fabrication.value);
+                    toast.add({
+                        severity: "success",
+                        summary: "Succès",
+                        detail: "Fabrication créée",
+                        life: 3000,
+                    });
+                }
+            );
         }
 
         fabricationDialog.value = false;
@@ -101,22 +109,24 @@ const confirmDeleteFabrication = (mod: Fabrication) => {
     deleteFabricationDialog.value = true;
 };
 const deleteFabrication = () => {
-    fabrications.value = fabrications.value.filter(
-        (val) => val.Id !== fabrication.value.Id
-    );
-    deleteFabricationDialog.value = false;
-    fabrication.value = {
-        Id: 0,
-        Nom: "",
-        Description: "",
-        Id_Modèle: 0,
-        Etapes_Description: "",
-    };
-    toast.add({
-        severity: "success",
-        summary: "Succès",
-        detail: "Fabrication Supprimée",
-        life: 3000,
+    FabricationService.delete(fabrication.value).then((res: AxiosResponse) => {
+        fabrications.value = fabrications.value.filter(
+            (val) => val.Id !== fabrication.value.Id
+        );
+        deleteFabricationDialog.value = false;
+        fabrication.value = {
+            Id: 0,
+            Nom: "",
+            Description: "",
+            Id_Modèle: 0,
+            Etapes_Description: "",
+        };
+        toast.add({
+            severity: "success",
+            summary: "Succès",
+            detail: "Fabrication Supprimée",
+            life: 3000,
+        });
     });
 };
 const findIndexById = (id: number) => {
@@ -134,16 +144,33 @@ const confirmDeleteSelected = () => {
     deleteFabricationsDialog.value = true;
 };
 const deleteSelectedFabrications = () => {
-    fabrications.value = fabrications.value.filter(
-        (val) => !selectedFabrications.value.includes(val)
-    );
     deleteFabricationsDialog.value = false;
-    selectedFabrications.value = Array<Fabrication>();
-    toast.add({
-        severity: "success",
-        summary: "Succès",
-        detail: "Fabrications Supprimées",
-        life: 3000,
+    var promises = Promise.resolve();
+    for (let i = 0; i < selectedFabrications.value.length; i++) {
+        promises = promises.then(() =>
+            FabricationService.delete(selectedFabrications.value[i]).then(
+                (res: AxiosResponse) => {
+                    toast.add({
+                        severity: "success",
+                        summary: "Succès",
+                        detail: "Ingrédient Supprimé",
+                        life: 3000,
+                    });
+                }
+            )
+        );
+    }
+    promises.finally(() => {
+        fabrications.value = fabrications.value.filter(
+            (val) => !selectedFabrications.value.includes(val)
+        );
+        selectedFabrications.value = Array<Fabrication>();
+        toast.add({
+            severity: "success",
+            summary: "Succès",
+            detail: "Fabrications Supprimées",
+            life: 3000,
+        });
     });
 };
 </script>
