@@ -1,7 +1,6 @@
 import router from "@/router";
 import { AuthService } from "@/service/AuthService";
-import { ModelService } from "@/service/ModelService";
-import { Axios, type AxiosResponse } from "axios";
+import { type AxiosResponse } from "axios";
 import { defineStore } from "pinia";
 
 interface State {
@@ -17,14 +16,15 @@ export const useAuthStore = defineStore({
     }),
     getters: {
         isAuthenticated: (state: State): Promise<boolean> => {
-            return AuthService.verifyToken(localStorage.getItem("token") ?? "")
-                .then((response: AxiosResponse) => {
-                    if (response.status != 200) {
-                        localStorage.removeItem("token");
-                        router.push({ name: "login" });
-                    }
-                    return response.status == 200;
-                });
+            return AuthService.verifyToken(
+                localStorage.getItem("token") ?? ""
+            ).then((response: AxiosResponse) => {
+                if (response.status != 200) {
+                    localStorage.removeItem("token");
+                    router.push({ name: "login" });
+                }
+                return response.status == 200;
+            });
         },
         getToken: (state: State) => {
             return localStorage.getItem("token") ?? null;

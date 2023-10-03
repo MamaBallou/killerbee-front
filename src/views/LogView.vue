@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import router from "@/router";
 import { useAuthStore } from "@/stores/auth";
-import type { Axios, AxiosResponse } from "axios";
-import type { EmitFlags } from "typescript";
 import { ref } from "vue";
 const Email = ref("");
 const Password = ref("");

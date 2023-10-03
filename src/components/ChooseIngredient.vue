@@ -54,7 +54,8 @@ const deleteIngredient = () => {
     });
 };
 
-const onRowEditSave = (event: any) => { // TODO: Trouver le type
+const onRowEditSave = (event: any) => {
+    // TODO: Trouver le type
     let { newData, index } = event;
 
     props.ingredients[index] = newData;
@@ -62,7 +63,16 @@ const onRowEditSave = (event: any) => { // TODO: Trouver le type
 </script>
 
 <template>
-    <DataTable v-model:editingRows="editingRows" editMode="row" @row-edit-save="onRowEditSave" tableClass="editable-cells-table" ref="dt" :value="ingredients" data-key="Id_Ingredient" :rows="300">
+    <DataTable
+        v-model:editingRows="editingRows"
+        editMode="row"
+        @row-edit-save="onRowEditSave"
+        tableClass="editable-cells-table"
+        ref="dt"
+        :value="ingredients"
+        data-key="Id_Ingredient"
+        :rows="300"
+    >
         <template #header>
             <div
                 class="flex flex-wrap gap-2 align-items-center justify-content-between"
@@ -80,7 +90,7 @@ const onRowEditSave = (event: any) => { // TODO: Trouver le type
             <template #body="dat">
                 <span>{{
                     listAllIngredients.find(
-                        (element) => (element.Id == dat.data.Id_Ingredient)
+                        (element) => element.Id == dat.data.Id_Ingredient
                     )?.Nom
                 }}</span>
             </template>
@@ -104,7 +114,11 @@ const onRowEditSave = (event: any) => { // TODO: Trouver le type
                 />
             </template>
         </Column>
-        <Column :rowEditor="true" style="width: 10%; min-width: 8rem" bodyStyle="text-align:center"></Column>
+        <Column
+            :rowEditor="true"
+            style="width: 10%; min-width: 8rem"
+            bodyStyle="text-align:center"
+        ></Column>
         <Column :exportable="false" style="min-width: 8rem">
             <template #body="slotProps">
                 <Button
@@ -146,7 +160,12 @@ const onRowEditSave = (event: any) => { // TODO: Trouver le type
                 text
                 @click="deleteIngredientDialog = false"
             />
-            <Button label="Oui" icon="pi pi-check" text @click="deleteIngredient" />
+            <Button
+                label="Oui"
+                icon="pi pi-check"
+                text
+                @click="deleteIngredient"
+            />
         </template>
     </Dialog>
 </template>

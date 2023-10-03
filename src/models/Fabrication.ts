@@ -1,5 +1,3 @@
-import type { Model } from "./Model";
-
 export interface Fabrication {
     Id: number;
     Nom: string;

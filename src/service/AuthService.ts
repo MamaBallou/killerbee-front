@@ -1,4 +1,4 @@
-import axios, { type AxiosResponse } from "axios";
+import axios from "axios";
 
 type auth = {
     Email: string;
@@ -15,8 +15,8 @@ export const AuthService = {
                 Authorization: token,
             },
             params: {
-                Table: "Modèle"
-            }
+                Table: "Modèle",
+            },
         });
     },
 };

@@ -1,6 +1,5 @@
 import type { IngredientInModel } from "./IngredientInModel";
 
-
 export interface Model {
     Id: number;
     Nom: string;
