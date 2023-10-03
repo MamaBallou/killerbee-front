@@ -8,6 +8,7 @@ export const IngredientService = {
     getAll() {
         return axios.get("/", {
             params: {
+                Endpoint: "/freezebee",
                 Table: "Ingrédient",
             },
             headers: {
@@ -19,6 +20,7 @@ export const IngredientService = {
     save(ingredient: Ingredient) {
         return axios.patch("/", {
             params: {
+                Endpoint: "/freezebee",
                 Table: "Ingrédient",
                 Data: ingredient,
             },
@@ -31,6 +33,7 @@ export const IngredientService = {
     create(ingredient: Ingredient) {
         return axios.post("/", {
             params: {
+                Endpoint: "/freezebee",
                 Table: "Ingrédient",
                 Data: ingredient,
             },
@@ -43,6 +46,7 @@ export const IngredientService = {
     delete(ingredient: Ingredient) {
         return axios.delete("/", {
             params: {
+                Endpoint: "/freezebee",
                 Table: "Ingrédient",
                 Data: ingredient,
             },

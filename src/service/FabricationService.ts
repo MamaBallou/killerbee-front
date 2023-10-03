@@ -9,6 +9,7 @@ export const FabricationService = {
     getAll(): Promise<AxiosResponse> {
         return axios.get("/", {
             params: {
+                Endpoint: "/freezebee",
                 Table: "Fabrication",
             },
             headers: {
@@ -19,6 +20,7 @@ export const FabricationService = {
     save(fabrication: Fabrication): Promise<AxiosResponse> {
         return axios.patch("/", {
             params: {
+                Endpoint: "/freezebee",
                 Table: "Fabrication",
                 Data: fabrication,
             },
@@ -30,6 +32,7 @@ export const FabricationService = {
     create(fabrication: Fabrication): Promise<AxiosResponse> {
         return axios.post("/", {
             params: {
+                Endpoint: "/freezebee",
                 Table: "Fabrication",
                 Data: fabrication,
             },
@@ -41,6 +44,7 @@ export const FabricationService = {
     delete(fabrication: Fabrication): Promise<AxiosResponse> {
         return axios.delete("/", {
             params: {
+                Endpoint: "/freezebee",
                 Table: "Fabrication",
                 Data: fabrication,
             },

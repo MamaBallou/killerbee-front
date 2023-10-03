@@ -8,6 +8,7 @@ export const ModelService = {
     getAll() {
         return axios.get("/", {
             params: {
+                Endpoint: "/freezebee",
                 Table: "Modèle",
             },
             headers: {
@@ -19,6 +20,7 @@ export const ModelService = {
     save(model: Model) {
         return axios.patch("/", {
             params: {
+                Endpoint: "/freezebee",
                 Table: "Modèle",
                 Data: model,
             },
@@ -31,6 +33,7 @@ export const ModelService = {
     create(model: Model) {
         return axios.post("/", {
             params: {
+                Endpoint: "/freezebee",
                 Table: "Modèle",
                 Data: model,
             },
@@ -43,6 +46,7 @@ export const ModelService = {
     delete(model: Model) {
         return axios.delete("/", {
             params: {
+                Endpoint: "/freezebee",
                 Table: "Modèle",
                 Data: model,
             },
