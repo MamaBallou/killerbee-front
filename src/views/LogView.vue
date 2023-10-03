@@ -46,6 +46,7 @@ const login = () => {
                     type="text"
                     class="w-full mb-3"
                     v-model="Email"
+                    @keydown.enter.enter="login"
                 />
 
                 <label for="password1" class="block text-900 font-medium mb-2"
@@ -56,6 +57,7 @@ const login = () => {
                     type="password"
                     class="w-full mb-3"
                     v-model="Password"
+                    @keydown.enter.enter="login"
                 />
 
                 <Button
@@ -63,6 +65,8 @@ const login = () => {
                     icon="pi pi-user"
                     class="w-full"
                     @click="login"
+                    @keydown.enter.enter="login"
+                    @keydown.enter.space="login"
                 ></Button>
             </div>
         </div>
