@@ -16,18 +16,14 @@ export const useAuthStore = defineStore({
         token: null,
     }),
     getters: {
-        isAuthenticated: (state: State) => {
+        isAuthenticated: (state: State): Promise<boolean> => {
             return AuthService.verifyToken(localStorage.getItem("token") ?? "")
                 .then((response: AxiosResponse) => {
                     if (response.status != 200) {
                         localStorage.removeItem("token");
                         router.push({ name: "login" });
                     }
-                })
-                .catch((error) => {
-                    
-                    localStorage.removeItem("token");
-                    router.push({ name: "login" });
+                    return response.status == 200;
                 });
         },
         getToken: (state: State) => {

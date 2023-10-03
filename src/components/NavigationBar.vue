@@ -33,14 +33,7 @@ onMounted(() => {
     active.value = items.value.findIndex(
         (item) => route.path === router.resolve(item.route).path
     );
-    authStore.isAuthenticated.then((response) => {
-        
-        isAuthenticated.value = response;
-    });
-});
-
-onUpdated(() => {    
-    authStore.isAuthenticated.then((response) => {
+    authStore.isAuthenticated.then((response: boolean) => {
         isAuthenticated.value = response;
     });
 });
@@ -56,8 +49,9 @@ watch(
 );
 
 const logout = () => {
-    localStorage.removeItem("token");
-    router.push("/login");
+    authStore.logout();
+    isAuthenticated.value = false;
+    router.push({ name: "login" });
 };
 </script>
 
