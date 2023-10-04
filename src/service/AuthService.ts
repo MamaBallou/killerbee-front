@@ -8,7 +8,7 @@ type auth = {
 export const AuthService = {
     login(payload: auth) {
         return axios.post(
-            "/",
+            "",
             {
                 Endpoint: "/connexion",
                 Email: payload.Email,
