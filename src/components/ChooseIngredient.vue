@@ -11,8 +11,13 @@ const props = defineProps<{
     ingredients: IngredientInModel[];
 }>();
 
+var ingredientToDisplay = ref(
+    Array(...props.ingredients).filter((ing) => ing.Type != "Suppression")
+);
+
 const listAllIngredients = ref<Ingredient[]>([]);
 const ingredient = ref<IngredientInModel>({
+    Type: "",
     Id_Ingredient: 0,
     Grammage: 0,
 });
@@ -29,10 +34,12 @@ onMounted(() => {
 const addRow = () => {
     const dt = ref<DataTable | null>(null);
     const newIngredient: IngredientInModel = {
+        Type: "Ajout",
         Id_Ingredient: 0,
         Grammage: 0,
     };
     props.ingredients.push(newIngredient);
+    ingredientToDisplay.value.push(newIngredient);
 };
 
 const confirmDeleteModel = (ing: IngredientInModel) => {
@@ -40,9 +47,15 @@ const confirmDeleteModel = (ing: IngredientInModel) => {
     deleteIngredientDialog.value = true;
 };
 const deleteIngredient = () => {
-    props.ingredients.splice(props.ingredients.indexOf(ingredient.value), 1);
+    props.ingredients[props.ingredients.indexOf(ingredient.value)].Type =
+        "Suppression";
+    ingredientToDisplay.value.splice(
+        ingredientToDisplay.value.indexOf(ingredient.value),
+        1
+    );
     deleteIngredientDialog.value = false;
     ingredient.value = {
+        Type: "",
         Id_Ingredient: -1,
         Grammage: 0,
     };
@@ -55,10 +68,21 @@ const deleteIngredient = () => {
 };
 
 const onRowEditSave = (event: any) => {
-    // TODO: Trouver le type
     let { newData, index } = event;
 
+    ingredientToDisplay.value[index] = newData;
+
+    var oldIngr = props.ingredients.find(
+        (element) => element.Id_Ingredient == newData.Id_Ingredient
+    );
+
+    if (oldIngr == undefined) {
+        return;
+    }
+    index = props.ingredients.indexOf(oldIngr);
+
     props.ingredients[index] = newData;
+    props.ingredients[index].Type = "Modification";
 };
 </script>
 
@@ -69,7 +93,7 @@ const onRowEditSave = (event: any) => {
         @row-edit-save="onRowEditSave"
         tableClass="editable-cells-table"
         ref="dt"
-        :value="ingredients"
+        :value="ingredientToDisplay"
         data-key="Id_Ingredient"
         :rows="300"
     >
