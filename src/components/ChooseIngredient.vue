@@ -68,7 +68,7 @@ const deleteIngredient = () => {
 };
 
 const onRowEditSave = (event: any) => {
-    let { newData, index } = event;
+    let { newData, index }: { newData: IngredientInModel; index: int } = event;
 
     ingredientToDisplay.value[index] = newData;
 
@@ -77,12 +77,19 @@ const onRowEditSave = (event: any) => {
     );
 
     if (oldIngr == undefined) {
-        return;
+        oldIngr = props.ingredients.find(
+            (element) => element.Id_Ingredient == 0
+        );
+        if (oldIngr == undefined) {
+            return;
+        }
     }
     index = props.ingredients.indexOf(oldIngr);
 
     props.ingredients[index] = newData;
-    props.ingredients[index].Type = "Modification";
+    props.ingredients[index].Type != "Ajout"
+        ? (props.ingredients[index].Type = "Modification")
+        : null;
 };
 </script>
 
