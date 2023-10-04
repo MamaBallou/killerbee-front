@@ -7,15 +7,19 @@ type auth = {
 
 export const AuthService = {
     login(payload: auth) {
-        return axios.post("", {
-            Endpoint: "/connexion",
-            Email: payload.Email,
-            Password: payload.Password,
-        }, {
-            headers: {
-                RequestType: "Connexion"
-            }   
-        });
+        return axios.post(
+            "/",
+            {
+                Endpoint: "/connexion",
+                Email: payload.Email,
+                Password: payload.Password,
+            },
+            {
+                headers: {
+                    RequestType: "Connexion",
+                },
+            }
+        );
     },
     verifyToken(token: string) {
         return axios.get("", {
