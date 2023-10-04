@@ -6,53 +6,55 @@ const authStore = useAuthStore();
 
 export const IngredientService = {
     getAll() {
-        return axios.get("/", {
+        return axios.get("", {
             params: {
                 Endpoint: "/freezebee",
                 Table: "Ingrédient",
             },
             headers: {
-                Authorization: authStore.getToken,
+                Authorization: `Bearer ${authStore.getToken}`,
             },
         });
     },
 
     save(ingredient: Ingredient) {
-        return axios.patch("/", {
-            params: {
+        return axios.patch("", 
+            {
                 Endpoint: "/freezebee",
                 Table: "Ingrédient",
                 Data: ingredient,
             },
+            {
             headers: {
-                Authorization: authStore.getToken,
-            },
-        });
+                Authorization: `Bearer ${authStore.getToken}`,
+            },}
+        );
     },
 
     create(ingredient: Ingredient) {
-        return axios.post("/", {
-            params: {
+        return axios.post("", 
+            {
                 Endpoint: "/freezebee",
                 Table: "Ingrédient",
                 Data: ingredient,
             },
+            {
             headers: {
-                Authorization: authStore.getToken,
-            },
-        });
+                Authorization: `Bearer ${authStore.getToken}`,
+            },}
+        );
     },
 
     delete(ingredient: Ingredient) {
-        return axios.delete("/", {
-            params: {
+        return axios.delete("", {
+            headers: {
+              Authorization: `Bearer ${authStore.getToken}`
+            },
+            data: {
                 Endpoint: "/freezebee",
                 Table: "Ingrédient",
-                Data: ingredient,
-            },
-            headers: {
-                Authorization: authStore.getToken,
-            },
-        });
+                Id: ingredient.Id,
+            }
+          });
     },
 };

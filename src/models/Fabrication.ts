@@ -2,6 +2,6 @@ export interface Fabrication {
     Id: number;
     Nom: string;
     Description: string;
-    Id_Modèle: number;
+    Id_Modele: number;
     Etapes_Description: string;
 }

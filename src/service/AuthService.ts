@@ -7,19 +7,23 @@ type auth = {
 
 export const AuthService = {
     login(payload: auth) {
-        return axios.post("/", {
+        return axios.post("", {
             Endpoint: "/connexion",
             Email: payload.Email,
             Password: payload.Password,
+        }, {
+            headers: {
+                RequestType: "Connexion"
+            }   
         });
     },
     verifyToken(token: string) {
-        return axios.get("/", {
+        return axios.get("", {
             headers: {
-                Authorization: token,
+                Authorization: `Bearer ${token}`,
             },
             params: {
-                Endpoint: "/connexion",
+                Endpoint: "/freezebee",
                 Table: "Modèle",
             },
         });

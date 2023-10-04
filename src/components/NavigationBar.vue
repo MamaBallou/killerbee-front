@@ -76,7 +76,7 @@ const logout = () => {
                         v-bind="props.action"
                         @click="($event) => routerProps.navigate($event)"
                         @keydown.enter.space="
-                            ($event) => routerProps.navigate($event)
+                            ($event:any) => routerProps.navigate($event)
                         "
                     >
                         <span v-bind="props.icon" />

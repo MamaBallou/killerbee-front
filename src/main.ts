@@ -216,6 +216,6 @@ app.component("Editor", Editor);
 
 // Axios
 import axios from "axios";
-axios.defaults.baseURL = import.meta.env.VITE_API_LINK;
+axios.defaults.baseURL = "http://10.0.10.29:9100/middleware";
 
 app.mount("#app");

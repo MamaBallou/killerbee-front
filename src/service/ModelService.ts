@@ -6,53 +6,56 @@ const authStore = useAuthStore();
 
 export const ModelService = {
     getAll() {
-        return axios.get("/", {
+        return axios.get("", {
             params: {
                 Endpoint: "/freezebee",
                 Table: "Modèle",
             },
             headers: {
-                Authorization: authStore.getToken,
+                Authorization: `Bearer ${authStore.getToken}`,
             },
         });
     },
 
     save(model: Model) {
-        return axios.patch("/", {
-            params: {
+        return axios.patch("", 
+            {
                 Endpoint: "/freezebee",
                 Table: "Modèle",
                 Data: model,
             },
+            {
             headers: {
-                Authorization: authStore.getToken,
-            },
-        });
+                Authorization: `Bearer ${authStore.getToken}`,
+            },}
+        );
     },
 
     create(model: Model) {
-        return axios.post("/", {
-            params: {
+        return axios.post("", 
+            {
                 Endpoint: "/freezebee",
                 Table: "Modèle",
                 Data: model,
             },
+            {
             headers: {
-                Authorization: authStore.getToken,
-            },
-        });
+                Authorization: `Bearer ${authStore.getToken}`,
+            },}
+        );
     },
 
     delete(model: Model) {
-        return axios.delete("/", {
-            params: {
+        return axios.delete("", {
+            headers: {
+              Authorization: `Bearer ${authStore.getToken}`
+            },
+            data: {
                 Endpoint: "/freezebee",
                 Table: "Modèle",
-                Data: model,
-            },
-            headers: {
-                Authorization: authStore.getToken,
-            },
-        });
+                Id: model.Id,
+                Id_Modele: model.Id,
+            }
+          });
     },
 };

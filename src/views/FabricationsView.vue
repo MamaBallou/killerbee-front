@@ -35,7 +35,7 @@ const fabrication: Ref<Fabrication> = ref<Fabrication>({
     Id: 0,
     Nom: "",
     Description: "",
-    Id_Modèle: 0,
+    Id_Modele: 0,
     Etapes_Description: "",
 });
 const selectedFabrications: Ref<Fabrication[]> = ref(Array<Fabrication>());
@@ -49,7 +49,7 @@ const openNew = () => {
         Id: 0,
         Nom: "",
         Description: "",
-        Id_Modèle: 0,
+        Id_Modele: 0,
         Etapes_Description: "",
     };
     submitted.value = false;
@@ -77,7 +77,7 @@ const saveFabrication = () => {
                 }
             );
         } else {
-            FabricationService.save(fabrication.value).then(
+            FabricationService.create(fabrication.value).then(  
                 (res: AxiosResponse) => {
                     fabrications.value.push(fabrication.value);
                     toast.add({
@@ -95,7 +95,7 @@ const saveFabrication = () => {
             Id: 0,
             Nom: "",
             Description: "",
-            Id_Modèle: 0,
+            Id_Modele: 0,
             Etapes_Description: "",
         };
     }
@@ -118,7 +118,7 @@ const deleteFabrication = () => {
             Id: 0,
             Nom: "",
             Description: "",
-            Id_Modèle: 0,
+            Id_Modele: 0,
             Etapes_Description: "",
         };
         toast.add({
@@ -250,7 +250,7 @@ const deleteSelectedFabrications = () => {
                             {{
                                 AllModels.find(
                                     (model) =>
-                                        model.Id === slotProps.data.Id_Modèle
+                                        model.Id === slotProps.data.Id_Modele
                                 )?.Nom
                             }}
                         </span>
@@ -313,7 +313,7 @@ const deleteSelectedFabrications = () => {
                     id="model"
                     option-label="Nom"
                     option-value="Id"
-                    v-model="fabrication.Id_Modèle"
+                    v-model="fabrication.Id_Modele"
                     :options="AllModels"
                 />
             </div>
@@ -322,7 +322,7 @@ const deleteSelectedFabrications = () => {
                 <ul>
                     <li
                         v-for="ingredient in AllModels.find(
-                            (model) => model.Id == fabrication.Id_Modèle
+                            (model) => model.Id == fabrication.Id_Modele
                         )?.Ingredient"
                     >
                         {{

@@ -7,50 +7,52 @@ const authStore = useAuthStore();
 
 export const FabricationService = {
     getAll(): Promise<AxiosResponse> {
-        return axios.get("/", {
+        return axios.get("", {
             params: {
                 Endpoint: "/freezebee",
                 Table: "Fabrication",
             },
             headers: {
-                Authorization: authStore.getToken,
+                Authorization: `Bearer ${authStore.getToken}`,
             },
         });
     },
     save(fabrication: Fabrication): Promise<AxiosResponse> {
-        return axios.patch("/", {
-            params: {
+        return axios.patch("", 
+            {
                 Endpoint: "/freezebee",
                 Table: "Fabrication",
                 Data: fabrication,
             },
+            {
             headers: {
-                Authorization: authStore.getToken,
-            },
-        });
+                Authorization: `Bearer ${authStore.getToken}`,
+            },}
+        );
     },
     create(fabrication: Fabrication): Promise<AxiosResponse> {
-        return axios.post("/", {
-            params: {
+        return axios.post("", 
+            {
                 Endpoint: "/freezebee",
                 Table: "Fabrication",
                 Data: fabrication,
             },
+            {
             headers: {
-                Authorization: authStore.getToken,
-            },
-        });
+                Authorization: `Bearer ${authStore.getToken}`,
+            },}
+        );
     },
     delete(fabrication: Fabrication): Promise<AxiosResponse> {
-        return axios.delete("/", {
-            params: {
+        return axios.delete("", {
+            headers: {
+              Authorization: `Bearer ${authStore.getToken}`
+            },
+            data: {
                 Endpoint: "/freezebee",
                 Table: "Fabrication",
-                Data: fabrication,
-            },
-            headers: {
-                Authorization: authStore.getToken,
-            },
-        });
+                Id: fabrication.Id,
+            }
+          });
     },
 };
